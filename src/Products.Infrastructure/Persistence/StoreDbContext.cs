@@ -14,14 +14,15 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options) : DbContex
         // Configure relationships and other entity properties
         modelBuilder.Entity<Product>()
             .HasOne(p => p.Category)
-            .WithMany() // Or WithMany(c => c.Products)
+            .WithMany()
             .HasForeignKey(p => p.CategoryId);
 
         // Example of configuring other properties
         modelBuilder.Entity<Product>(b =>
         {
             b.Property(p => p.Name).IsRequired().HasMaxLength(255);
-            b.Property(p => p.Price).HasColumnType("decimal(18, 2)"); // Example for decimal precision
+            b.Property(p => p.Price).HasColumnType("decimal(18, 2)");
+            b.HasIndex(p => p.CategoryId);
         });
 
         modelBuilder.Entity<Category>(b =>

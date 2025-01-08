@@ -1,6 +1,10 @@
-﻿namespace Products.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Products.Domain.Entities;
 
 public class Category : Entity
 {
-    public string Name { get; set; } = default!;
+    [MaxLength(255)]
+    [Required]
+    public string Name { get; set; } = string.Empty;
 }
