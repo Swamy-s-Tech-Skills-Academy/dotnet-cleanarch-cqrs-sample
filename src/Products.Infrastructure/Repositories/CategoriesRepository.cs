@@ -2,15 +2,10 @@
 using Products.Domain.Entities;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Products.Infrastructure.Repositories;
 
-public class CategoryRepository(StoreDbContext storeDbContext) : ICategoryRepository
+internal sealed class CategoriesRepository(StoreDbContext storeDbContext) : ICategoriesRepository
 {
     private readonly StoreDbContext _storeDbContext = storeDbContext;
 

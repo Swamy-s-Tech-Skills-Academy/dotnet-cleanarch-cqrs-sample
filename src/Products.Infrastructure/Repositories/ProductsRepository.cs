@@ -5,7 +5,7 @@ using Products.Infrastructure.Persistence;
 
 namespace Products.Infrastructure.Repositories;
 
-public class ProductsRepository(StoreDbContext storeDbContext) : IProductRepository
+internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProductsRepository
 {
     private readonly StoreDbContext _storeDbContext = storeDbContext ?? throw new ArgumentNullException(nameof(storeDbContext));
 

@@ -2,7 +2,7 @@
 
 namespace Products.Domain.Interfaces.Repositories;
 
-public interface IProductRepository
+public interface IProductsRepository
 {
     Task<List<Product>> GetProductsByPrice(decimal minPrice, decimal maxPrice, int pageNumber, int pageSize);
 
