@@ -20,7 +20,8 @@ public static class ServiceCollectionExtensions
                 errorNumbersToAdd: null);
         }).EnableSensitiveDataLogging());
 
-        //services.AddScoped<IRestaurantSeeder, RestaurantSeeder>();
+        //services.AddScoped<ICategoriesSeeder, CategoriesSeeder>();
+        //services.AddScoped<IProductsSeeder, ProductsSeeder>();
 
         services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 
