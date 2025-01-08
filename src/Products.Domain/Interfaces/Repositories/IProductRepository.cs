@@ -8,7 +8,7 @@ public interface IProductRepository
 
     Task<List<Product>> GetProductsByDate(DateTime startDate, DateTime endDate, int pageNumber, int pageSize);
 
-    Task<List<Product>> GetProductsByCategory(string category, int pageNumber, int pageSize);
+    Task<List<Product>> GetProductsByCategory(Guid categoryId, int pageNumber, int pageSize);
 
     Task<List<Product>> GetAllProducts(int pageNumber, int pageSize);
 
