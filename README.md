@@ -7,6 +7,7 @@ I am learning .NET 9 Clean Architecture CQRS MediatR Filtering from different Vi
 - [Clean Architecture CQRS Sample in .NET 9](#clean-architecture-cqrs-sample-in-net-9)
   - [Table of Contents](#table-of-contents)
   - [Project Description](#project-description)
+  - [Few Commands](#few-commands)
   - [Technologies Used](#technologies-used)
   - [Getting Started](#getting-started)
   - [Project Structure](#project-structure)
@@ -24,6 +25,19 @@ I am learning .NET 9 Clean Architecture CQRS MediatR Filtering from different Vi
 ## Project Description
 
 This sample project provides a practical example of building a .NET API using Clean Architecture principles, CQRS, and MediatR. It focuses on implementing robust filtering and querying capabilities while maintaining a clean, testable, and maintainable codebase.
+
+## Few Commands
+
+```text
+PS D:\STSA\dotnet-cleanarch-cqrs-sample\src>
+```
+
+```powershell
+dotnet ef migrations add InitialCreate --context StoreDbContext --project .\Products.Infrastructure --startup-project .\Products.API
+
+# Update database for StoreDbContext
+dotnet ef database update --context StoreDbContext --project .\Products.Infrastructure --startup-project .\Products.API
+```
 
 ## Technologies Used
 
