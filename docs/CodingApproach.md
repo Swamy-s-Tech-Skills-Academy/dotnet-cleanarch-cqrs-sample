@@ -245,3 +245,228 @@ public class GetAllProductsQuery : IRequest<List<ProductDto>>
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
 }
+
+
+Okay, you want to implement four query use cases for retrieving products: by price range, by date range, by category name, and all products with pagination. Here's how you can implement these in your Application layer, along with necessary adjustments to the Infrastructure and Domain layers:
+
+**1. Domain Layer Changes (ProductFilter):**
+
+It's better to create a single filter object to encapsulate all filtering criteria. This makes your repository methods more flexible.
+
+```csharp
+// Products.Domain/Filters/ProductFilter.cs
+public class ProductFilter
+{
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public Guid? CategoryId { get; set; } // Use Guid for CategoryId
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+```
+
+**2. Infrastructure Layer Changes (Repository):**
+
+Modify the `IProductsRepository` and `ProductsRepository` to use the `ProductFilter`:
+
+```csharp
+// Products.Domain/Interfaces/Repositories/IProductsRepository.cs
+public interface IProductsRepository
+{
+    Task<List<Product>> GetProductsAsync(ProductFilter filter);
+    // ... other methods
+}
+
+// Products.Infrastructure/Persistence/ProductsRepository.cs
+public async Task<List<Product>> GetProductsAsync(ProductFilter filter)
+{
+    IQueryable<Product> query = _storeDbContext.Products.Include(p => p.Category);
+
+    if (filter.MinPrice.HasValue)
+    {
+        query = query.Where(p => p.Price >= filter.MinPrice);
+    }
+
+    if (filter.MaxPrice.HasValue)
+    {
+        query = query.Where(p => p.Price <= filter.MaxPrice);
+    }
+
+    if (filter.StartDate.HasValue && filter.EndDate.HasValue)
+    {
+        query = query.Where(p => p.CreatedDate >= filter.StartDate && p.CreatedDate <= filter.EndDate);
+    }
+
+    if (filter.CategoryId.HasValue)
+    {
+        query = query.Where(p => p.CategoryId == filter.CategoryId);
+    }
+
+    return await query
+        .Skip((filter.PageNumber - 1) * filter.PageSize)
+        .Take(filter.PageSize)
+        .ToListAsync();
+}
+```
+
+**3. Application Layer (Queries, Handlers, DTOs):**
+
+```csharp
+// Products.Application/DTOs/ProductDto.cs
+public class ProductDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = default!;
+    public decimal Price { get; set; }
+    public Guid CategoryId { get; set; }
+    public string CategoryName { get; set; } = default!;
+    public DateTime CreatedDate { get; set; }
+}
+
+// Products.Application/Queries/ProductsQueryByPrice.cs
+public class ProductsQueryByPrice : IRequest<List<ProductDto>>
+{
+    public decimal MinPrice { get; set; }
+    public decimal MaxPrice { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+// Products.Application/Handlers/ProductsQueryByPriceHandler.cs
+public class ProductsQueryByPriceHandler : IRequestHandler<ProductsQueryByPrice, List<ProductDto>>
+{
+    private readonly IProductsRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+    public ProductsQueryByPriceHandler(IProductsRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    {
+        _productRepository = productRepository;
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
+    public async Task<List<ProductDto>> Handle(ProductsQueryByPrice request, CancellationToken cancellationToken)
+    {
+        var filter = new ProductFilter
+        {
+            MinPrice = request.MinPrice,
+            MaxPrice = request.MaxPrice,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        };
+        var products = await _productRepository.GetProductsAsync(filter);
+        var productDtos = _mapper.Map<List<ProductDto>>(products);
+        foreach (var productDto in productDtos)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
+            productDto.CategoryName = category?.Name;
+        }
+        return productDtos;
+    }
+}
+
+// Products.Application/Queries/ProductsQueryByDate.cs
+public class ProductsQueryByDate : IRequest<List<ProductDto>>
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+// Products.Application/Handlers/ProductsQueryByDateHandler.cs
+public class ProductsQueryByDateHandler : IRequestHandler<ProductsQueryByDate, List<ProductDto>>
+{
+    private readonly IProductsRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+    public ProductsQueryByDateHandler(IProductsRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    {
+        _productRepository = productRepository;
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
+    public async Task<List<ProductDto>> Handle(ProductsQueryByDate request, CancellationToken cancellationToken)
+    {
+        var filter = new ProductFilter
+        {
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        };
+        var products = await _productRepository.GetProductsAsync(filter);
+        var productDtos = _mapper.Map<List<ProductDto>>(products);
+        foreach (var productDto in productDtos)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
+            productDto.CategoryName = category?.Name;
+        }
+        return productDtos;
+    }
+}
+
+// Products.Application/Queries/ProductsQueryByCategory.cs
+public class ProductsQueryByCategory : IRequest<List<ProductDto>>
+{
+    public Guid CategoryId { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+// Products.Application/Handlers/ProductsQueryByCategoryHandler.cs
+public class ProductsQueryByCategoryHandler : IRequestHandler<ProductsQueryByCategory, List<ProductDto>>
+{
+    private readonly IProductsRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+    public ProductsQueryByCategoryHandler(IProductsRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    {
+        _productRepository = productRepository;
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
+    public async Task<List<ProductDto>> Handle(ProductsQueryByCategory request, CancellationToken cancellationToken)
+    {
+        var filter = new ProductFilter
+        {
+            CategoryId = request.CategoryId,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        };
+        var products = await _productRepository.GetProductsAsync(filter);
+        var productDtos = _mapper.Map<List<ProductDto>>(products);
+        foreach (var productDto in productDtos)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
+            productDto.CategoryName = category?.Name;
+        }
+        return productDtos;
+    }
+}
+
+// Products.Application/Queries/GetAllProductsQuery.cs
+public class GetAllProductsQuery : IRequest<List<ProductDto>>
+{
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+// Products.Application/Handlers/GetAllProductsQueryHandler.cs
+public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, List<ProductDto>>
+{
+    private readonly IProductsRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+    public GetAllProductsQueryHandler(IProductsRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    {
+        _productRepository = productRepository;
+        _categoryRepository = categoryRepository;
+        _mapper = mapper;
+    }
+    public async Task<List<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    {
+        var filter = new ProductFilter
+        {
+            

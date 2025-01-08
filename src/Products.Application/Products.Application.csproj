@@ -8,7 +8,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.*" />
+		<PackageReference Include="MediatR" Version="12.4.*" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Products.Domain\Products.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Products\Queries\ProductsByDate\" />
 	</ItemGroup>
 
 </Project>
