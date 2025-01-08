@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Products.Domain.Entities;
+using Products.Domain.Filters;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Persistence;
 
@@ -9,35 +10,35 @@ internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProdu
 {
     private readonly StoreDbContext _storeDbContext = storeDbContext ?? throw new ArgumentNullException(nameof(storeDbContext));
 
-    //public async Task<List<Product>> GetProductsAsync(ProductFilter filter)
-    //{
-    //    IQueryable<Product> query = _storeDbContext.Products.Include(p => p.Category); // Include Category
+    public async Task<List<Product>> GetProductsAsync(ProductFilter filter)
+    {
+        IQueryable<Product> query = _storeDbContext.Products.Include(p => p.Category);
 
-    //    if (filter.MinPrice.HasValue)
-    //    {
-    //        query = query.Where(p => p.Price >= filter.MinPrice);
-    //    }
+        if (filter.MinPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= filter.MinPrice);
+        }
 
-    //    if (filter.MaxPrice.HasValue)
-    //    {
-    //        query = query.Where(p => p.Price <= filter.MaxPrice);
-    //    }
+        if (filter.MaxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= filter.MaxPrice);
+        }
 
-    //    if (filter.StartDate.HasValue && filter.EndDate.HasValue)
-    //    {
-    //        query = query.Where(p => p.CreatedDate >= filter.StartDate && p.CreatedDate <= filter.EndDate);
-    //    }
+        if (filter.StartDate.HasValue && filter.EndDate.HasValue)
+        {
+            query = query.Where(p => p.CreatedDate >= filter.StartDate && p.CreatedDate <= filter.EndDate);
+        }
 
-    //    if (filter.CategoryId.HasValue) // Use CategoryId
-    //    {
-    //        query = query.Where(p => p.CategoryId == filter.CategoryId);
-    //    }
+        if (filter.CategoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == filter.CategoryId);
+        }
 
-    //    return await query
-    //        .Skip((filter.PageNumber - 1) * filter.PageSize)
-    //        .Take(filter.PageSize)
-    //        .ToListAsync();
-    //}
+        return await query
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync();
+    }
 
     public async Task<List<Product>> GetProductsByPrice(decimal minPrice, decimal maxPrice, int pageNumber, int pageSize)
     {
