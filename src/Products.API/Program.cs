@@ -1,4 +1,7 @@
 using Products.Infrastructure.Extensions;
+using Products.Infrastructure.Persistence.Seeders;
+using Products.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,25 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<StoreDbContext>();
+        context.Database.Migrate(); // Ensure database is created/updated
+
+        var categoriesSeeder = services.GetRequiredService<ICategoriesSeeder>();
+        await categoriesSeeder.SeedAsync();
+
+        var productsSeeder = services.GetRequiredService<IProductsSeeder>();
+        await productsSeeder.SeedAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
 }
 
 app.UseHttpsRedirection();
