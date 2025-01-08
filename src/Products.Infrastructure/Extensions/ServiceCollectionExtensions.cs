@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Persistence;
+using Products.Infrastructure.Persistence.Seeders;
 using Products.Infrastructure.Repositories;
 
 namespace Products.Infrastructure.Extensions;
@@ -20,8 +21,9 @@ public static class ServiceCollectionExtensions
                 errorNumbersToAdd: null);
         }).EnableSensitiveDataLogging());
 
-        //services.AddScoped<ICategoriesSeeder, CategoriesSeeder>();
-        //services.AddScoped<IProductsSeeder, ProductsSeeder>();
+        services.AddScoped<ICategoriesSeeder, CategoriesSeeder>();
+
+        services.AddScoped<IProductsSeeder, ProductsSeeder>();
 
         services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 
