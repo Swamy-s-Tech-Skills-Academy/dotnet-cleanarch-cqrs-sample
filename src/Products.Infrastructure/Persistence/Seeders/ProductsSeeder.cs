@@ -10,19 +10,30 @@ public class ProductsSeeder(StoreDbContext storeDbContext) : IProductsSeeder
     {
         if (!_storeDbContext.Products.Any()) // Check if data exists
         {
-            var electronicsCategory = _storeDbContext.Categories.FirstOrDefault(c => c.Name == "Electronics");
-            if (electronicsCategory != null)
+            foreach (var category in _storeDbContext.Categories)
             {
-                var products = new List<Product>
+                var products = new List<Product>();
+                Random random = new();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    // Generate random date within the last year
+                    var randomDate = DateTime.Now.AddDays(-random.Next(365));
+
+                    products.Add(new Product
                     {
-                        new() { Id = Guid.NewGuid(), Name = "Laptop", Price = 1200.00m, CategoryId = electronicsCategory.Id, CreatedDate = DateTime.Now },
-                        new() { Id = Guid.NewGuid(), Name = "Smartphone", Price = 800.00m, CategoryId = electronicsCategory.Id, CreatedDate = DateTime.Now },
-                        // Add more products
-                    };
+                        Id = Guid.NewGuid(),
+                        Name = $"Product {category.Name} {i + 1}",
+                        Price = random.Next(10, 1000) * 0.99m, // Generate random price between $10 and $999.99
+                        CategoryId = category.Id,
+                        CreatedDate = randomDate
+                    });
+                }
 
                 await _storeDbContext.Products.AddRangeAsync(products);
-                await _storeDbContext.SaveChangesAsync();
             }
+
+            await _storeDbContext.SaveChangesAsync();
         }
     }
 }
