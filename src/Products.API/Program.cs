@@ -1,7 +1,7 @@
-using Products.Infrastructure.Extensions;
-using Products.Infrastructure.Persistence.Seeders;
-using Products.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Products.Infrastructure.Extensions;
+using Products.Infrastructure.Persistence;
+using Products.Infrastructure.Persistence.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
