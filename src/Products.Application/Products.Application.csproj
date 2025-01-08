@@ -16,8 +16,4 @@
 		<ProjectReference Include="..\Products.Domain\Products.Domain.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Products\Queries\ProductsByDate\" />
-	</ItemGroup>
-
 </Project>
