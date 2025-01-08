@@ -1,10 +1,10 @@
-# dotnet-cleanarch-cqrs-sample
+# Clean Architecture CQRS Sample in .NET 9
 
 I am learning .NET 9 Clean Architecture CQRS MediatR Filtering from different Video Courses, Books, and Websites. This repository demonstrates how to implement Clean Architecture with CQRS (Command Query Responsibility Segregation), MediatR, and filtering in a .NET API.
 
 ## Table of Contents
 
-- [dotnet-cleanarch-cqrs-sample](#dotnet-cleanarch-cqrs-sample)
+- [Clean Architecture CQRS Sample in .NET 9](#clean-architecture-cqrs-sample-in-net-9)
   - [Table of Contents](#table-of-contents)
   - [Project Description](#project-description)
   - [Technologies Used](#technologies-used)
@@ -48,13 +48,15 @@ This sample project provides a practical example of building a .NET API using Cl
 ## Project Structure
 
 ```text
-dotnet-cleanarch-cqrs-sample/
+dotnet-cleanarch-cqrs-sample/      (Solution Folder)
+├── CleanArchCQRS.Sample.sln       (Solution File)
 ├── src/
-│   ├── Application/       (Use Cases, Handlers, DTOs, Mappings, Validators)
-│   ├── Domain/            (Entities, Interfaces, Domain Logic)
-│   ├── Infrastructure/   (Database, External Services)
-│   └── Presentation/     (Controllers)
-└── ...
+│   ├── CleanArchCQRS.Sample.Domain/
+│   ├── CleanArchCQRS.Sample.Application/
+│   ├── CleanArchCQRS.Sample.Infrastructure/
+│   └── CleanArchCQRS.Sample.Presentation/
+└── tests/
+    └── CleanArchCQRS.Sample.Tests/
 ```
 
 ## Key Features/Examples
