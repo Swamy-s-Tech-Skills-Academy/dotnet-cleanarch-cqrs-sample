@@ -215,3 +215,33 @@ public async Task<IActionResult> GetProductById(int id)
 ```
 
 By focusing on just the `Product` entity, you can create a working example of Clean Architecture with CQRS and MediatR without getting overwhelmed by too many domain concepts. Once you have this working, it will be much easier to add other entities and features as needed. This incremental approach is highly recommended.
+
+
+public class ProductsQueryByPrice : IRequest<List<ProductDto>>
+{
+    public decimal MinPrice { get; set; }
+    public decimal MaxPrice { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+public class ProductsQueryByDate : IRequest<List<ProductDto>>
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+public class ProductsQueryByCategory : IRequest<List<ProductDto>>
+{
+    public string Category { get; set; } = default!;
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+public class GetAllProductsQuery : IRequest<List<ProductDto>> 
+{
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
