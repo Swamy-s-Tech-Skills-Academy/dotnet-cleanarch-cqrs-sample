@@ -51,10 +51,10 @@ This sample project provides a practical example of building a .NET API using Cl
 dotnet-cleanarch-cqrs-sample/      (Solution Folder)
 ├── CleanArchCQRS.Sample.sln       (Solution File)
 ├── src/
-│   ├── CleanArchCQRS.Sample.Domain/
-│   ├── CleanArchCQRS.Sample.Application/
-│   ├── CleanArchCQRS.Sample.Infrastructure/
-│   └── CleanArchCQRS.Sample.Presentation/
+│   ├── Products.Domain/
+│   ├── Products.Application/
+│   ├── Products.Infrastructure/
+│   └── Products.API/
 └── tests/
     └── CleanArchCQRS.Sample.Tests/
 ```
