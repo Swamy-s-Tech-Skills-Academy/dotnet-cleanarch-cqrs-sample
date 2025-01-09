@@ -6,17 +6,12 @@ using Products.Application.Products.Queries.ProductsByPrice;
 
 namespace Products.Application.Behaviors;
 
-public class ProductQueryHandlerSelectorBehavior<TRequest, TResponse> :
+public class ProductQueryHandlerSelectorBehavior<TRequest, TResponse>(IMediator mediator) :
     IPipelineBehavior<TRequest, TResponse>
     where TRequest : GetProductsQuery, IRequest<TResponse>
     where TResponse : List<ProductDto>
 {
-    private readonly IMediator _mediator;
-
-    public ProductQueryHandlerSelectorBehavior(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {

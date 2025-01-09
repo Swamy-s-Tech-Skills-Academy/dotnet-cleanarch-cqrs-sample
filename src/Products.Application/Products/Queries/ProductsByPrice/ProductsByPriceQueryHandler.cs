@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Products.Application.DTOs;
+using Products.Domain.Entities;
 using Products.Domain.Filters;
 using Products.Domain.Interfaces.Repositories;
 
@@ -14,16 +15,17 @@ public class ProductsByPriceQueryHandler(IProductsRepository productRepository, 
 
     public async Task<List<ProductDto>> Handle(ProductsByPriceQuery request, CancellationToken cancellationToken)
     {
-        var filter = new ProductFilter
+        ProductFilter filter = new()
         {
             MinPrice = request.MinPrice,
             MaxPrice = request.MaxPrice,
             PageNumber = request.PageNumber,
             PageSize = request.PageSize
         };
-        var products = await _productRepository.GetProductsAsync(filter);
 
-        var productDtos = _mapper.Map<List<ProductDto>>(products);
+        List<Product>? products = await _productRepository.GetProductsAsync(filter);
+
+        List<ProductDto> productDtos = _mapper.Map<List<ProductDto>>(products);
 
         return productDtos;
     }

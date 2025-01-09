@@ -40,7 +40,7 @@ internal sealed class CategoriesRepository(StoreDbContext storeDbContext) : ICat
         if (category != null)
         {
             _storeDbContext.Categories.Remove(category);
-        
+
             await _storeDbContext.SaveChangesAsync();
         }
     }

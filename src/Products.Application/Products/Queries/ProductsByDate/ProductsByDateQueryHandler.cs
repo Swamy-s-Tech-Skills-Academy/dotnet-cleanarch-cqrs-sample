@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Products.Application.DTOs;
+using Products.Domain.Entities;
 using Products.Domain.Filters;
 using Products.Domain.Interfaces.Repositories;
 
@@ -14,7 +15,7 @@ public class ProductsByDateQueryHandler(IProductsRepository productRepository, I
 
     public async Task<List<ProductDto>> Handle(ProductsByDateQuery request, CancellationToken cancellationToken)
     {
-        var filter = new ProductFilter
+        ProductFilter filter = new()
         {
             StartDate = request.StartDate,
             EndDate = request.EndDate,
@@ -22,9 +23,9 @@ public class ProductsByDateQueryHandler(IProductsRepository productRepository, I
             PageSize = request.PageSize
         };
 
-        var products = await _productRepository.GetProductsAsync(filter);
+        List<Product>? products = await _productRepository.GetProductsAsync(filter);
 
-        var productDtos = _mapper.Map<List<ProductDto>>(products);
+        List<ProductDto>? productDtos = _mapper.Map<List<ProductDto>>(products);
 
         return productDtos;
     }
