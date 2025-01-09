@@ -26,13 +26,6 @@ public class ProductsByDateQueryHandler(IProductsRepository productRepository, I
 
         var productDtos = _mapper.Map<List<ProductDto>>(products);
 
-        foreach (var productDto in productDtos)
-        {
-            var category = await _categoriesRepository.GetCategoryByIdAsync(productDto.CategoryId);
-
-            productDto.CategoryName = category?.Name!;
-        }
-
         return productDtos;
     }
 }
