@@ -10,15 +10,15 @@ public class ProductsSeeder(StoreDbContext storeDbContext) : IProductsSeeder
     {
         if (!_storeDbContext.Products.Any()) // Check if data exists
         {
-            foreach (var category in _storeDbContext.Categories)
+            foreach (Category? category in _storeDbContext.Categories)
             {
-                var products = new List<Product>();
+                List<Product> products = [];
                 Random random = new();
 
                 for (int i = 0; i < 10; i++)
                 {
                     // Generate random date within the last year
-                    var randomDate = DateTime.Now.AddDays(-random.Next(365));
+                    DateTime randomDate = DateTime.Now.AddDays(-random.Next(365));
 
                     products.Add(new Product
                     {

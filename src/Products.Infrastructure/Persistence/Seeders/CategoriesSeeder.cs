@@ -10,8 +10,8 @@ public class CategoriesSeeder(StoreDbContext storeDbContext) : ICategoriesSeeder
     {
         if (!_storeDbContext.Categories.Any()) // Check if data exists
         {
-            var categories = new List<Category>
-                {
+            List<Category>? categories =
+                [
                     new() { Id = Guid.NewGuid(), Name = "Electronics" },
                     new() { Id = Guid.NewGuid(), Name = "Books" },
                     new() { Id = Guid.NewGuid(), Name = "Clothing" },
@@ -22,7 +22,7 @@ public class CategoriesSeeder(StoreDbContext storeDbContext) : ICategoriesSeeder
                     new() { Id = Guid.NewGuid(), Name = "Automotive" },
                     new() { Id = Guid.NewGuid(), Name = "Health & Household" },
                     new() { Id = Guid.NewGuid(), Name = "Pet Supplies" }
-                };
+                ];
 
             await _storeDbContext.Categories.AddRangeAsync(categories);
 
