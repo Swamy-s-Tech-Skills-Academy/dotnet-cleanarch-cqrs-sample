@@ -96,7 +96,7 @@ internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProdu
 
     public async Task DeleteProductAsync(int id)
     {
-        var product = await _storeDbContext.Products.FindAsync(id);
+        Product? product = await _storeDbContext.Products.FindAsync(id);
 
         if (product != null)
         {

@@ -18,24 +18,29 @@ internal sealed class CategoriesRepository(StoreDbContext storeDbContext) : ICat
     {
         return await _storeDbContext.Categories.FindAsync(id);
     }
+
     public async Task AddCategoryAsync(Category category)
     {
         _storeDbContext.Categories.Add(category);
+
         await _storeDbContext.SaveChangesAsync();
     }
 
     public async Task UpdateCategoryAsync(Category category)
     {
         _storeDbContext.Categories.Update(category);
+
         await _storeDbContext.SaveChangesAsync();
     }
 
     public async Task DeleteCategoryAsync(Guid id)
     {
-        var category = await _storeDbContext.Categories.FindAsync(id);
+        Category? category = await _storeDbContext.Categories.FindAsync(id);
+
         if (category != null)
         {
             _storeDbContext.Categories.Remove(category);
+        
             await _storeDbContext.SaveChangesAsync();
         }
     }
