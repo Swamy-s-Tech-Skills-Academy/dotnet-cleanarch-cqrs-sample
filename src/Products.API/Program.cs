@@ -4,7 +4,7 @@ using Products.Infrastructure.Extensions;
 using Products.Infrastructure.Persistence;
 using Products.Infrastructure.Persistence.Seeders;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -16,30 +16,31 @@ builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-var app = builder.Build();
+WebApplication? app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 
-    using var scope = app.Services.CreateScope();
-    var services = scope.ServiceProvider;
+    using IServiceScope? scope = app.Services.CreateScope();
+    IServiceProvider? services = scope.ServiceProvider;
+
     try
     {
-        var context = services.GetRequiredService<StoreDbContext>();
+        StoreDbContext? context = services.GetRequiredService<StoreDbContext>();
         context.Database.Migrate(); // Ensure database is created/updated
 
-        var categoriesSeeder = services.GetRequiredService<ICategoriesSeeder>();
+        ICategoriesSeeder? categoriesSeeder = services.GetRequiredService<ICategoriesSeeder>();
         await categoriesSeeder.SeedAsync();
 
-        var productsSeeder = services.GetRequiredService<IProductsSeeder>();
+        IProductsSeeder? productsSeeder = services.GetRequiredService<IProductsSeeder>();
         await productsSeeder.SeedAsync();
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred seeding the DB.");
+        ILogger<Program>? logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the Store DB.");
     }
 }
 
