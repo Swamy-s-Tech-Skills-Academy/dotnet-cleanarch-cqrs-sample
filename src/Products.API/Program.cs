@@ -1,4 +1,5 @@
 using Products.API.Extensions;
+using Products.Infrastructure.Persistence.Seeders;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -11,5 +12,10 @@ WebApplication? app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseHttpPipeline();
+
+if (app.Environment.IsDevelopment())
+{
+    await DatabaseSeeder.SeedAsync(app.Services);
+}
 
 app.Run();
