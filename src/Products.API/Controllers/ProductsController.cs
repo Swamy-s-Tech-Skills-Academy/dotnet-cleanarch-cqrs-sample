@@ -14,7 +14,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<ProductDto>>> GetProducts([FromBody] GetProductsQuery request)
     {
-        var products = await _mediator.Send(request);
+        List<ProductDto>? products = await _mediator.Send(request);
 
         return Ok(products);
     }

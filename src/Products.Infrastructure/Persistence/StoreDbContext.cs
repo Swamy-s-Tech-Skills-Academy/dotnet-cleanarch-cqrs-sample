@@ -17,7 +17,6 @@ public class StoreDbContext(DbContextOptions<StoreDbContext> options) : DbContex
             .WithMany()
             .HasForeignKey(p => p.CategoryId);
 
-        // Example of configuring other properties
         modelBuilder.Entity<Product>(b =>
         {
             b.Property(p => p.Name).IsRequired().HasMaxLength(255);

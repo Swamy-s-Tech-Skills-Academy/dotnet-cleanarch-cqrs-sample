@@ -10,7 +10,5 @@ public class ProductsProfile : Profile
     {
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category)); // Explicit mapping for Category
-
-        CreateMap<Category, CategoryDto>();
     }
 }
