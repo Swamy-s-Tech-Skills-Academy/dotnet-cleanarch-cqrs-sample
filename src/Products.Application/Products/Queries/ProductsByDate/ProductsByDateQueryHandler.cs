@@ -19,6 +19,8 @@ public class ProductsByDateQueryHandler(IProductsRepository productRepository, I
         {
             StartDate = request.StartDate,
             EndDate = request.EndDate,
+            SortColumn = request.SortColumn,
+            SortDirection = request.SortDirection,
             PageNumber = request.PageNumber,
             PageSize = request.PageSize
         };

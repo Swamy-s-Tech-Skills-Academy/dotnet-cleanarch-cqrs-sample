@@ -43,9 +43,9 @@ internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProdu
                 SortColumn.Name => query.OrderBy(p => p.Name),
 
                 SortColumn.Price => query.OrderBy(p => p.Price),
-                
+
                 SortColumn.CreatedDate => query.OrderBy(p => p.CreatedDate),
-                
+
                 _ => query.OrderBy(p => p.Id), // Default to Id
             },
             SortDirection.Desc => filter.SortColumn switch
@@ -53,9 +53,9 @@ internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProdu
                 SortColumn.Name => query.OrderByDescending(p => p.Name),
 
                 SortColumn.Price => query.OrderByDescending(p => p.Price),
-                
+
                 SortColumn.CreatedDate => query.OrderByDescending(p => p.CreatedDate),
-                
+
                 _ => query.OrderByDescending(p => p.Id), // Default to Id
             },
             _ => query.OrderBy(p => p.Id), // Default to Id if SortDirection is invalid
