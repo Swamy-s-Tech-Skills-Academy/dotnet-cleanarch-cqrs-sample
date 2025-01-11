@@ -1,4 +1,6 @@
-﻿namespace Products.Domain.Filters;
+﻿using Products.Domain.Enums;
+
+namespace Products.Domain.Filters;
 
 public class ProductFilter
 {
@@ -11,6 +13,10 @@ public class ProductFilter
     public DateTime? EndDate { get; set; }
 
     public Guid? CategoryId { get; set; }
+
+    public SortColumn SortColumn { get; set; } = SortColumn.Id;
+
+    public SortDirection SortDirection { get; set; } = SortDirection.Asc;
 
     public int PageNumber { get; set; } = 1;
 

@@ -19,6 +19,8 @@ public class ProductsByPriceQueryHandler(IProductsRepository productRepository, 
         {
             MinPrice = request.MinPrice,
             MaxPrice = request.MaxPrice,
+            SortColumn = request.SortColumn,
+            SortDirection = request.SortDirection,
             PageNumber = request.PageNumber,
             PageSize = request.PageSize
         };

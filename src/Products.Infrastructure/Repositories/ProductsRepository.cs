@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Products.Domain.Entities;
+using Products.Domain.Enums;
 using Products.Domain.Filters;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Persistence;
@@ -33,6 +34,32 @@ internal sealed class ProductsRepository(StoreDbContext storeDbContext) : IProdu
         {
             query = query.Where(p => p.CategoryId == filter.CategoryId);
         }
+
+        // Apply Ordering using switch expression and enums
+        query = filter.SortDirection switch
+        {
+            SortDirection.Asc => filter.SortColumn switch
+            {
+                SortColumn.Name => query.OrderBy(p => p.Name),
+
+                SortColumn.Price => query.OrderBy(p => p.Price),
+
+                SortColumn.CreatedDate => query.OrderBy(p => p.CreatedDate),
+
+                _ => query.OrderBy(p => p.Id), // Default to Id
+            },
+            SortDirection.Desc => filter.SortColumn switch
+            {
+                SortColumn.Name => query.OrderByDescending(p => p.Name),
+
+                SortColumn.Price => query.OrderByDescending(p => p.Price),
+
+                SortColumn.CreatedDate => query.OrderByDescending(p => p.CreatedDate),
+
+                _ => query.OrderByDescending(p => p.Id), // Default to Id
+            },
+            _ => query.OrderBy(p => p.Id), // Default to Id if SortDirection is invalid
+        };
 
         return await query
             .Skip((filter.PageNumber - 1) * filter.PageSize)
