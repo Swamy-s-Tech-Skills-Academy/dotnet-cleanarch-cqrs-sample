@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Products.Application.Behaviors;
+
 //using Products.Application.Behaviors;
 using System.Reflection;
 
@@ -19,5 +22,7 @@ public static class ServiceCollectionExtension
 
             //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ProductQueryHandlerSelectorBehavior<,>));
         });
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
     }
 }
