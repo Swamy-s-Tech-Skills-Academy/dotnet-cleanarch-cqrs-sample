@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using Products.Application.DTOs;
 using Products.Domain.Entities;
 using Products.Domain.Filters;
 using Products.Domain.Interfaces.Repositories;
+using Products.Shared.DTOs;
 
 namespace Products.Application.Products.Queries.ProductsByDate;
 

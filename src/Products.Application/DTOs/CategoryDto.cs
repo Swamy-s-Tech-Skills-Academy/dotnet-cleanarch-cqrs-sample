@@ -1,8 +1,8 @@
-﻿namespace Products.Application.DTOs;
+﻿// namespace Products.Application.DTOs;
 
-public record CategoryDto
-{
-    public Guid Id { get; init; } // Use init-only setters for records
+// public record CategoryDto
+// {
+//     public Guid Id { get; init; } // Use init-only setters for records
 
-    public string Name { get; init; } = string.Empty;
-}
+//     public string Name { get; init; } = string.Empty;
+// }
