@@ -1,4 +1,6 @@
-﻿namespace Products.API.Extensions;
+﻿using Products.API.Middlewares;
+
+namespace Products.API.Extensions;
 
 public static class WebApplicationExtensions
 {
@@ -9,6 +11,10 @@ public static class WebApplicationExtensions
         {
             app.MapOpenApi();
         }
+
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
+        app.UseMiddleware<RequestTimeLoggingMiddleware>();
 
         app.UseHttpsRedirection();
 

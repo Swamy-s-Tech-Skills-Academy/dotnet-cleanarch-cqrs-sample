@@ -1,4 +1,5 @@
-﻿using Products.Application.Extensions;
+﻿using Products.API.Middlewares;
+using Products.Application.Extensions;
 using Products.Infrastructure.Extensions;
 
 namespace Products.API.Extensions;
@@ -16,5 +17,8 @@ public static class ServiceCollectionExtension
 
         services.AddInfrastructure(configuration);
 
+        services.AddScoped<ErrorHandlingMiddleware>();
+
+        services.AddScoped<RequestTimeLoggingMiddleware>();
     }
 }
