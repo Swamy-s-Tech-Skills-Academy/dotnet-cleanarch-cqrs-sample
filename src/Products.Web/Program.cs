@@ -1,4 +1,6 @@
 using Products.Web.Components;
+using Products.Web.Configuration; // Make sure you have this using statement
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,17 +8,27 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+// Configuration is already available here!
 var baseUrl = builder.Configuration["API_Base_Url"];
-if (!string.IsNullOrEmpty(baseUrl))
+
+// Validate configuration *before* using it to create services
+if (string.IsNullOrWhiteSpace(baseUrl))
 {
-    builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl) });
+    throw new ConfigurationErrorsException("API_Base_Url configuration is missing or contains only whitespace.");
 }
-else
+
+try
 {
-    // TODO: Handle missing configuration (e.g., log a warning, use a default value)
-    // Handle missing configuration (e.g., log a warning, use a default value)
-    Console.WriteLine("Warning: API_Base_Url configuration not found.");
+    _ = new Uri(baseUrl);
 }
+catch (UriFormatException ex)
+{
+    throw new ConfigurationErrorsException($"API_Base_Url configuration is invalid: {ex.Message}");
+}
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl!) }); // Non-null assertion is now safe
+
+builder.Services.AddScoped<IStartupFilter, ConfigurationValidationFilter>();
 
 var app = builder.Build();
 
