@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Products.Application.DTOs;
 using Products.Domain.Enums;
+using Products.Shared.DTOs;
 
 namespace Products.Application.Products.Queries;
 

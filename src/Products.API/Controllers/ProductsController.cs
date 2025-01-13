@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Products.Application.DTOs;
 using Products.Application.Products.Queries;
 using Products.Application.Products.Queries.ProductsByDate;
 using Products.Application.Products.Queries.ProductsByPrice;
+using Products.Shared.DTOs;
 
 namespace Products.API.Controllers;
 

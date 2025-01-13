@@ -1,14 +1,14 @@
-﻿namespace Products.Application.DTOs;
+﻿// namespace Products.Application.DTOs;
 
-public record ProductDto
-{
-    public Guid Id { get; init; }
+// public record ProductDto
+// {
+//     public Guid Id { get; init; }
 
-    public string Name { get; init; } = string.Empty;
+//     public string Name { get; init; } = string.Empty;
 
-    public decimal Price { get; init; }
+//     public decimal Price { get; init; }
 
-    public CategoryDto Category { get; init; } = default!; // Embed CategoryDto
+//     public CategoryDto Category { get; init; } = default!; // Embed CategoryDto
 
-    public DateTime CreatedDate { get; init; }
-}
+//     public DateTime CreatedDate { get; init; }
+// }
