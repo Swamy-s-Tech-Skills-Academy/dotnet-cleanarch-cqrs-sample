@@ -1,0 +1,62 @@
+﻿@page "/categories"
+
+@using Products.Shared.DTOs
+@using Products.Web.Services
+
+@inject CategoryService CategoryService
+
+<h3>Categories</h3>
+
+@if (isLoading) // Use isLoading to show loading message
+{
+    <p><em>Loading...</em></p>
+}
+else if (categories == null)
+{
+    <p class="text-danger"><em>Error loading categories. Please try again later.</em></p>
+}
+else if (categories.Count == 0)
+{
+    <p><em>No categories found.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CategoryDto>? categories;
+    private bool isLoading = true; // Initialize to true
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categories = await CategoryService.GetCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"An error occurred: {ex.Message}");
+            // Handle error, e.g., display an error message to the user
+            categories = null; // Set categories to null to indicate an error
+        }
+        finally
+        {
+            isLoading = false; // Set loading to false in finally block
+        }
+    }
+}

@@ -73,6 +73,20 @@ dotnet-cleanarch-cqrs-sample/      (Solution Folder)
     └── CleanArchCQRS.Sample.Tests/
 ```
 
+## Categories Feature
+
+```text
+Listing all categories
+
+Creating new categories
+
+Editing existing categories
+
+Deleting categories
+
+Filtering and sorting categories
+```
+
 ## Key Features/Examples
 
 ### Filtering by Price
