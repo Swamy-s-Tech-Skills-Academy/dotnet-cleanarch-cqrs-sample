@@ -8,6 +8,6 @@ public class Category : Entity
     [Required]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(1000)] 
+    [MaxLength(1000)]
     public string Description { get; set; } = string.Empty;
 }

@@ -34,6 +34,7 @@ PS D:\STSA\dotnet-cleanarch-cqrs-sample\src>
 
 ```powershell
 dotnet ef migrations add InitialCreate --context StoreDbContext --project .\Products.Infrastructure --startup-project .\Products.API -o Persistence/Migrations
+dotnet ef migrations add AddCategoryDescription --context StoreDbContext --project .\Products.Infrastructure --startup-project .\Products.API -o Persistence/Migrations
 
 # Update database for StoreDbContext
 dotnet ef database update --context StoreDbContext --project .\Products.Infrastructure --startup-project .\Products.API
