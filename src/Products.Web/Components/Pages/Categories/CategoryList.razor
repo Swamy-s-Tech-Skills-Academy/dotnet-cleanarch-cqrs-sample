@@ -2,36 +2,55 @@
 
 @using Products.Shared.DTOs
 @using Products.Web.Services
+@using Products.Shared.Enums
+@using System.Linq
 
 @inject CategoryService CategoryService
 
+@page "/categories"
+
+
 <h3>Categories</h3>
 
-@if (isLoading) // Use isLoading to show loading message
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <input @bind="searchText" type="text" class="form-control" placeholder="Search categories..." />
+    <button @onclick="SortCategories" class="btn btn-sm btn-primary">Sort</button>
+</div>
+
+@if (isLoading)
 {
     <p><em>Loading...</em></p>
 }
-else if (categories == null)
+else if (errorMessage != null)
 {
-    <p class="text-danger"><em>Error loading categories. Please try again later.</em></p>
+    <p class="text-danger">@errorMessage</p>
 }
-else if (categories.Count == 0)
+else if (categories == null || categories.Count == 0)
 {
     <p><em>No categories found.</em></p>
 }
 else
 {
-    <table class="table">
+    <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
+                <th @onclick="() => SortCategoriesBy(nameof(CategoryDto.Name))" style="cursor: pointer;">
+                    Name @(sortBy == nameof(CategoryDto.Name) ? (sortDirection == SortDirection.Ascending ? "▲" : "▼") : "")
+                </th>
+                <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var category in categories)
+            @foreach (var category in filteredCategories)
             {
                 <tr>
                     <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <NavLink class="btn btn-sm btn-primary" href="@($"categories/edit/{category.Id}")">Edit</NavLink>
+                        <button class="btn btn-sm btn-danger" @onclick="@(() => OnDeleteCategory(category.Id))">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -40,23 +59,66 @@ else
 
 @code {
     private List<CategoryDto>? categories;
-    private bool isLoading = true; // Initialize to true
+    private bool isLoading = true;
+    private string searchText = "";
+    private SortDirection sortDirection = SortDirection.Ascending;
+    private string? sortBy;
+    private string? errorMessage;
+
+    private List<CategoryDto> filteredCategories =>
+        categories?.Where(c => string.IsNullOrEmpty(searchText) || c.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                   .OrderBy(c => sortBy == nameof(CategoryDto.Name) ? c.Name : null, sortDirection == SortDirection.Ascending ? StringComparer.OrdinalIgnoreCase : StringComparer.OrdinalIgnoreCase)
+                   .ToList() ?? new List<CategoryDto>();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             categories = await CategoryService.GetCategoriesAsync();
+            if (categories is null)
+                errorMessage = "API returned a null response.";
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.Error.WriteLine($"HTTP Error fetching categories: {ex.Message}");
+            errorMessage = $"HTTP Error: {ex.Message}";
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"An error occurred: {ex.Message}");
-            // Handle error, e.g., display an error message to the user
-            categories = null; // Set categories to null to indicate an error
+            Console.Error.WriteLine($"An unexpected error occurred: {ex.Message}");
+            errorMessage = "An unexpected error occurred. Please try again later.";
         }
         finally
         {
-            isLoading = false; // Set loading to false in finally block
+            isLoading = false;
         }
+    }
+
+    private void SortCategories()
+    {
+        sortDirection = sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+        StateHasChanged(); // Force re-render
+    }
+
+    private void SortCategoriesBy(string sortByProperty)
+    {
+        if (sortBy == sortByProperty)
+        {
+            SortCategories(); // Toggle direction if sorting by the same property
+        }
+        else
+        {
+            sortBy = sortByProperty;
+            sortDirection = SortDirection.Ascending; // Reset direction if sorting by a new property
+        }
+        StateHasChanged();
+    }
+
+    private async Task OnDeleteCategory(Guid id)
+    {
+        await Task.CompletedTask; // Implement delete logic here (API call, etc.)
+
+        // Implement delete logic here (API call, etc.)
+        Console.WriteLine($"Delete category with ID: {id}");
     }
 }
