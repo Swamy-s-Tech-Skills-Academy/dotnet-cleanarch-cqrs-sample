@@ -11,6 +11,7 @@ I am learning .NET 9 Clean Architecture CQRS MediatR Filtering from different Vi
   - [Technologies Used](#technologies-used)
   - [Getting Started](#getting-started)
   - [Project Structure](#project-structure)
+  - [Categories Feature](#categories-feature)
   - [Key Features/Examples](#key-featuresexamples)
     - [Filtering by Price](#filtering-by-price)
     - [Filtering by Date](#filtering-by-date)
@@ -125,3 +126,42 @@ Filtering and sorting categories
 ## License
 
 (Include the license information)
+
+
+**Strategy Design Pattern:**
+
+*   **Intent:** Defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently from clients that use it.
+*   **Level:** Design pattern (object-oriented design). Focuses on how to structure classes and objects within a single part of an application.
+*   **Problem:** Solves the problem of having multiple ways to perform a specific task and wanting to choose the algorithm at runtime.
+*   **Example:** Different sorting algorithms (bubble sort, quicksort, merge sort). You can switch between these algorithms based on the data or performance requirements.
+
+**CQRS (Command Query Responsibility Segregation):**
+
+*   **Intent:** Separates read and write operations for a data store. This means that the models used for querying data are different from the models used for updating data.
+*   **Level:** Architectural pattern. Focuses on the overall structure of an application or a significant part of it.
+*   **Problem:** Solves the problem of complex data models and performance bottlenecks that can arise when using the same data model for both reads and writes, especially in complex domains.
+*   **Example:** In an e-commerce application, the "Product" model used for displaying product details on a product page might be very different from the model used for adding a product to the inventory.
+
+**Key Differences Summarized:**
+
+| Feature          | Strategy Pattern                                   | CQRS                                               |
+| ---------------- | -------------------------------------------------- | -------------------------------------------------- |
+| **Intent**       | Interchangeable algorithms                         | Separation of read and write models              |
+| **Level**        | Design pattern (object-oriented)                   | Architectural pattern                             |
+| **Focus**        | How to implement a specific task                  | How to structure data access and manipulation    |
+| **Granularity**  | Fine-grained (within a class or small set of classes) | Coarse-grained (application or bounded context)   |
+| **Primary Goal** | Flexibility in algorithm selection                | Performance, scalability, and data consistency |
+
+**Relationship (Can be Used Together):**
+
+While they are distinct, the Strategy pattern can be used *within* a CQRS architecture. For example:
+
+*   You might use the Strategy pattern to choose different query strategies based on the type of query being executed (e.g., a simple lookup vs. a complex report).
+*   You could use the Strategy pattern to select different command handlers based on the type of command being processed.
+
+**In essence:**
+
+*   The Strategy pattern is about choosing *how* to do something.
+*   CQRS is about deciding *what* models to use for different operations (reads vs. writes).
+
+CQRS is a much broader concept than the Strategy pattern. It's an architectural decision that impacts the entire structure of your data access and manipulation logic. The Strategy pattern, on the other hand, is a more localized design decision that helps you manage variations within a specific task or algorithm.
