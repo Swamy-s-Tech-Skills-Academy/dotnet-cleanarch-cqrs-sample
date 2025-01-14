@@ -1,5 +1,6 @@
 using Products.Web.Components;
 using Products.Web.Configuration; // Make sure you have this using statement
+using Products.Web.Services;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,14 @@ catch (UriFormatException ex)
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseUrl!) }); // Non-null assertion is now safe
 
+builder.Services.AddHttpClient("ProductsAPI", client =>  // Named client "ProductsAPI"
+{
+    client.BaseAddress = new Uri(baseUrl!);
+});
+
 builder.Services.AddScoped<IStartupFilter, ConfigurationValidationFilter>();
+
+builder.Services.AddScoped<CategoryService>();
 
 var app = builder.Build();
 
