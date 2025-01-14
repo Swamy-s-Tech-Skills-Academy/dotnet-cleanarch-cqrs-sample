@@ -8,6 +8,6 @@ public class CategoriesProfile : Profile
 {
     public CategoriesProfile()
     {
-        CreateMap<Category, CategoryDto>();
+        CreateMap<Category, CategoryDto>().ReverseMap();
     }
 }
