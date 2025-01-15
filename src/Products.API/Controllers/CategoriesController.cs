@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Products.Application.Categories.Queries.GetAllCategories;
 using Products.Shared.DTOs;
