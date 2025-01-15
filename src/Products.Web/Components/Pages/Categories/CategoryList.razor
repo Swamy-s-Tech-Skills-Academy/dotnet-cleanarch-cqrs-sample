@@ -9,9 +9,13 @@
 
 <h3>Categories</h3>
 
+@* <div class="d-flex justify-content-between align-items-center mb-3"> *@
+@*     <input @bind="searchText" type="text" class="form-control" placeholder="Search categories..." /> *@
+@*     <button @onclick="SortCategories" class="btn btn-sm btn-primary">Sort</button> *@
+@* </div> *@
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <input @bind="searchText" type="text" class="form-control" placeholder="Search categories..." />
-    <button @onclick="SortCategories" class="btn btn-sm btn-primary">Sort</button>
 </div>
 
 @if (isLoading)
@@ -45,15 +49,17 @@ else
                     <td>@category.Name</td>
                     <td>@category.Description</td>
                     <td>
-                        <NavLink class="btn btn-sm btn-info" href="@($"categories/view/{category.Id}")" data-bs-toggle="tooltip" data-bs-placement="top" title="View Category">
-                            <i class="bi bi-eye"></i>
-                        </NavLink>
-                        <NavLink class="btn btn-sm btn-warning" href="@($"categories/edit/{category.Id}")" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Category">
-                            <i class="bi bi-pencil-square"></i>
-                        </NavLink>
-                        <button type="button" class="btn btn-sm btn-danger" @onclick="@(() => OnDeleteCategory(category.Id))" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Category">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <div class="d-flex justify-content-between" role="group">
+                            <NavLink class="btn btn-sm btn-info" href="@($"categories/view/{category.Id}")" data-bs-toggle="tooltip" data-bs-placement="top" title="View Category">
+                                <i class="bi bi-eye"></i>
+                            </NavLink>
+                            <NavLink class="btn btn-sm btn-warning" href="@($"categories/edit/{category.Id}")" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Category">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="@(() => OnDeleteCategory(category.Id))" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Category">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             }
@@ -66,13 +72,31 @@ else
     private bool isLoading = true;
     private string searchText = "";
     private SortDirection sortDirection = SortDirection.Ascending;
-    private string? sortBy;
+    private string sortBy = "Name";
     private string? errorMessage;
 
-    private List<CategoryDto> filteredCategories =>
-        categories?.Where(c => string.IsNullOrEmpty(searchText) || c.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
-                   .OrderBy(c => sortBy == nameof(CategoryDto.Name) ? c.Name : null, sortDirection == SortDirection.Ascending ? StringComparer.OrdinalIgnoreCase : StringComparer.OrdinalIgnoreCase)
-                   .ToList() ?? new List<CategoryDto>();
+    private List<CategoryDto> filteredCategories
+    {
+        get
+        {
+            if (categories == null)
+            {
+                return new List<CategoryDto>(); // Return empty list to avoid null exceptions
+            }
+
+            var query = categories.Where(c => string.IsNullOrEmpty(searchText) || c.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                query = sortDirection == SortDirection.Ascending
+                    ? query.OrderBy(c => typeof(CategoryDto).GetProperty(sortBy)?.GetValue(c, null))
+                    : query.OrderByDescending(c => typeof(CategoryDto).GetProperty(sortBy)?.GetValue(c, null));
+            }
+
+            return query.ToList();
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,31 +122,23 @@ else
         }
     }
 
-    private void SortCategories()
-    {
-        sortDirection = sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
-        StateHasChanged(); // Force re-render
-    }
-
     private void SortCategoriesBy(string sortByProperty)
     {
         if (sortBy == sortByProperty)
         {
-            SortCategories(); // Toggle direction if sorting by the same property
+            sortDirection = sortDirection == SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
         }
         else
         {
             sortBy = sortByProperty;
-            sortDirection = SortDirection.Ascending; // Reset direction if sorting by a new property
+            sortDirection = SortDirection.Ascending;
         }
         StateHasChanged();
     }
 
     private async Task OnDeleteCategory(Guid id)
     {
-        await Task.CompletedTask; // Implement delete logic here (API call, etc.)
-
-        // Implement delete logic here (API call, etc.)
+        await Task.CompletedTask;
         Console.WriteLine($"Delete category with ID: {id}");
     }
 }
