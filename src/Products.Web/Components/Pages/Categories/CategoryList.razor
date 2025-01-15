@@ -1,4 +1,5 @@
 ﻿@page "/categories"
+@rendermode InteractiveServer
 
 @using Products.Shared.DTOs
 @using Products.Web.Services
@@ -8,11 +9,6 @@
 @inject CategoryService CategoryService
 
 <h3>Categories</h3>
-
-@* <div class="d-flex justify-content-between align-items-center mb-3"> *@
-@*     <input @bind="searchText" type="text" class="form-control" placeholder="Search categories..." /> *@
-@*     <button @onclick="SortCategories" class="btn btn-sm btn-primary">Sort</button> *@
-@* </div> *@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <input @bind="searchText" type="text" class="form-control" placeholder="Search categories..." />
@@ -72,7 +68,7 @@ else
     private bool isLoading = true;
     private string searchText = "";
     private SortDirection sortDirection = SortDirection.Ascending;
-    private string sortBy = "Name";
+    private string sortBy = nameof(CategoryDto.Name);
     private string? errorMessage;
 
     private List<CategoryDto> filteredCategories
